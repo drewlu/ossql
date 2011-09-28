@@ -1,0 +1,6 @@
+Requirement:
+
+- support mount parameter of readonly, read-write
+- both ftp and php use the mounted file system, ftp mount a rw fs, and ro for php
+- new download thread for meta-data sync and file download- OSS could be mounted multiple but only one writable
+- new upload thread for meta-data sync and file upload 
