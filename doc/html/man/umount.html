@@ -1,0 +1,188 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The umount.s3ql command &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="../index.html" />
+    <link rel="up" title="Manpages" href="index.html" />
+    <link rel="next" title="The fsck.s3ql command" href="fsck.html" />
+    <link rel="prev" title="The s3qllock command" href="lock.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fsck.html" title="The fsck.s3ql command"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="lock.html" title="The s3qllock command"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Known Issues</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manpages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mkfs.html">The <strong class="program">mkfs.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adm.html">The <strong class="program">s3qladm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mount.html">The <strong class="program">mount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stat.html">The <strong class="program">s3qlstat</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctrl.html">The <strong class="program">s3qlctrl</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cp.html">The <strong class="program">s3qlcp</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rm.html">The <strong class="program">s3qlrm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lock.html">The <strong class="program">s3qllock</strong> command</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The <strong class="program">umount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsck.html">The <strong class="program">fsck.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcp.html">The <strong class="program">pcp</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="expire_backups.html">The <strong class="program">expire_backups</strong> command</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-umount-s3ql-command">
+<h1>The <strong class="program">umount.s3ql</strong> command<a class="headerlink" href="#the-umount-s3ql-command" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">umount.s3ql </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;mount point&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">umount.s3ql</strong> command unmounts the S3QL file system mounted in the
+directory <em>mount point</em> and blocks until all data has been uploaded to
+the storage backend.</p>
+<p>Only the user who mounted the file system with <strong class="program">mount.s3ql</strong>
+is able to unmount it with <strong class="command">umount.s3ql</strong>. If you are root and want to
+unmount an S3QL file system mounted by an ordinary user, you have to
+use the <strong class="program">fusermount -u</strong> or <strong class="command">umount</strong> command instead.
+Note that these commands do not block until all data has been
+uploaded, so if you use them instead of <strong class="program">umount.s3ql</strong> then
+you should manually wait for the <strong class="program">mount.s3ql</strong> process to
+terminate before shutting down the system.</p>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">umount.s3ql</strong> command accepts the following options.</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--debug</span></kbd></td>
+<td>activate debugging output</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--quiet</span></kbd></td>
+<td>be really quiet</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>just print program version and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--lazy</span>, <span class="option">-z</span></kbd></td>
+<td>Lazy umount. Detaches the file system immediately, even if
+there are still open files. The data will be uploaded in the
+background once all open files have been closed.</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit Status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<p><strong class="command">umount.s3ql</strong> returns exit code 0 if the operation succeeded and 1 if some
+error occured.</p>
+</div>
+<div class="section" id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<p>The S3QL homepage is at <a class="reference external" href="http://code.google.com/p/s3ql/">http://code.google.com/p/s3ql/</a>.</p>
+<p>The full S3QL documentation should also be installed somewhere on your
+system, conventional locations are <tt class="file docutils literal"><span class="pre">/usr/share/doc/s3ql</span></tt> or
+<tt class="file docutils literal"><span class="pre">/usr/local/doc/s3ql</span></tt>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="fsck.html" title="The fsck.s3ql command"
+             >next</a></li>
+        <li class="right" >
+          <a href="lock.html" title="The s3qllock command"
+             >previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

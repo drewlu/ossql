@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>General Information &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Storage Backends" href="backends.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="backends.html" title="Storage Backends"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">General Information</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#storing-authentication-information">Storing Authentication Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#on-backend-reliability">On Backend Reliability</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="general-information">
+<h1>General Information<a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
+<p>S3QL can store data at different service providers and using different
+protocols. The term <em>backend</em> refers to both the part of S3QL that
+implements communication with a specific storage service and the
+storage service itself. Most backends can hold more than one S3QL file
+system and thus require some additional information that specifies the
+file system location within the backend. This location is called a
+<em>bucket</em> (for historical reasons).</p>
+<p>Many S3QL commands expect a <em>storage url</em> as a parameter. A storage
+url specifies both the backend and the bucket and thus uniquely
+identifies an S3QL file system. The form of the storage url depends on
+the backend and is described together with the
+<a class="reference internal" href="backends.html#storage-backends"><em>Storage Backends</em></a>.</p>
+</div>
+<div class="section" id="storing-authentication-information">
+<span id="bucket-pw"></span><h2>Storing Authentication Information<a class="headerlink" href="#storing-authentication-information" title="Permalink to this headline">¶</a></h2>
+<p>Normally, S3QL reads username and password for the backend as well as
+an encryption passphrase for the bucket from the terminal. Most
+commands also accept an <tt class="cmdopt docutils literal"><span class="pre">--authfile</span></tt> parameter that can be
+used to read this information from a file instead.</p>
+<p>The authentication file consists of sections, led by a <tt class="docutils literal"><span class="pre">[section]</span></tt>
+header and followed by <tt class="docutils literal"><span class="pre">name:</span> <span class="pre">value</span></tt> entries. The section headers
+themselves are not used by S3QL but have to be unique within the file.</p>
+<p>In each section, the following entries can be defined:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">storage-url:</th><td class="field-body">Specifies the storage url to which this section applies. If a
+storage url starts with the value of this entry, the section is
+considered applicable.</td>
+</tr>
+<tr class="field"><th class="field-name">backend-login:</th><td class="field-body">Specifies the username to use for authentication with the backend.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">backend-password:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Specifies the password to use for authentication with the backend.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">bucket-passphrase:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Specifies the passphrase to use to decrypt the bucket (if it is
+encrypted).</td>
+</tr>
+</tbody>
+</table>
+<p>When reading the authentication file, S3QL considers every applicable
+section in order and uses the last value that it found for each entry.
+For example, consider the following authentication file:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="ge">[s3]</span><span class="l"></span>
+<span class="l">storage-url: s3://</span>
+<span class="l">backend-login: joe</span>
+<span class="l">backend-password: notquitesecret</span>
+
+<span class="ge">[bucket1]</span><span class="l"></span>
+<span class="l">storage-url: s3://joes-first-bucket</span>
+<span class="l">bucket-passphrase: neitheristhis</span>
+
+<span class="ge">[bucket2]</span><span class="l"></span>
+<span class="l">storage-url: s3://joes-second-bucket</span>
+<span class="l">bucket-passphrase: swordfish</span>
+
+<span class="ge">[bucket3]</span><span class="l"></span>
+<span class="l">storage-url: s3://joes-second-bucket/with-prefix</span>
+<span class="l">backend-login: bill</span>
+<span class="l">backend-password: bi23ll</span>
+<span class="l">bucket-passphrase: ll23bi</span>
+</pre></div>
+</div>
+<p>With this authentication file, S3QL would try to log in as &#8220;joe&#8221;
+whenever the s3 backend is used, except when accessing a storage url
+that begins with &#8220;s3://joes-second-bucket/with-prefix&#8221;. In that case,
+the last section becomes active and S3QL would use the &#8220;bill&#8221;
+credentials. Furthermore, bucket encryption passphrases will be used
+for storage urls that start with &#8220;s3://joes-first-bucket&#8221; or
+&#8220;s3://joes-second-bucket&#8221;.</p>
+<p>The authentication file is parsed by the <a class="reference external" href="http://docs.python.org/library/configparser.html">Python ConfigParser
+module</a>.</p>
+</div>
+<div class="section" id="on-backend-reliability">
+<span id="backend-reliability"></span><h2>On Backend Reliability<a class="headerlink" href="#on-backend-reliability" title="Permalink to this headline">¶</a></h2>
+<p>S3QL has been designed for use with a storage backend where data loss
+is so infrequent that it can be completely neglected (e.g. the Amazon
+S3 backend). If you decide to use a less reliable backend, you should
+keep the following warning in mind and read this section carefully.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">S3QL is not able to compensate for any failures of the backend. In
+particular, it is not able reconstruct any data that has been lost
+or corrupted by the backend. The persistence and durability of data
+stored in an S3QL file system is limited and determined by the
+backend alone.</p>
+</div>
+<p>On the plus side, if a backend looses or corrupts some of the stored
+data, S3QL <em>will</em> detect the problem. Missing data will be detected
+when running <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> or when attempting to access the data in the
+mounted file system. In the later case you will get an IO Error, and
+on unmounting S3QL will warn you that the file system is damaged and
+you need to run <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt>.</p>
+<p><tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> will report all the affected files and move them into the
+<tt class=" docutils literal"><span class="pre">/lost+found</span></tt> directory of the file system.</p>
+<p>You should be aware that, because of S3QL&#8217;s data de-duplication
+feature, the consequences of a data loss in the backend can be
+significantly more severe than you may expect. More concretely, a data
+loss in the backend at time <em>x</em> may cause data that is written <em>after</em>
+time <em>x</em> to be lost as well. What may happen is this:</p>
+<ol class="arabic simple">
+<li>You store an important file in the S3QL file system.</li>
+<li>The backend looses the data blocks of this file. As long as you
+do not access the file or run <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt>, S3QL
+is not aware that the data has been lost by the backend.</li>
+<li>You save an additional copy of the important file in a different
+location on the same S3QL file system.</li>
+<li>S3QL detects that the contents of the new file are identical to the
+data blocks that have been stored earlier. Since at this point S3QL
+is not aware that these blocks have been lost by the backend, it
+does not save another copy of the file contents in the backend but
+relies on the (presumably) existing blocks instead.</li>
+<li>Therefore, even though you saved another copy, you still do not
+have a backup of the important file (since both copies refer to the
+same data blocks that have been lost by the backend).</li>
+</ol>
+<p>As one can see, this effect becomes the less important the more often
+one runs <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt>, since <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> will make S3QL aware of any
+blocks that the backend may have lost. Figuratively, this establishes
+a &#8220;checkpoint&#8221;: data loss in the backend that occurred before running
+<tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> can not affect any file system operations performed after
+running <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt>.</p>
+<p>Nevertheless, the recommended way to use S3QL is in combination with a
+sufficiently reliable storage backend. In that case none of the above
+will ever be a concern.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="backends.html" title="Storage Backends"
+             >next</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

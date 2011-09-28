@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>File System Creation &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Managing Buckets" href="adm.html" />
+    <link rel="prev" title="Storage Backends" href="backends.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="adm.html" title="Managing Buckets"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="backends.html" title="Storage Backends"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="file-system-creation">
+<h1>File System Creation<a class="headerlink" href="#file-system-creation" title="Permalink to this headline">¶</a></h1>
+<p>A S3QL file system is created with the <tt class=" docutils literal"><span class="pre">mkfs.s3ql</span></tt> command. It has the
+following syntax:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">mkfs.s3ql </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;storage url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>This command accepts the following options:</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--cachedir <var>&lt;path&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Store cached data in this directory (default: <tt class=" docutils literal"><span class="pre">~/.s3ql)</span></tt></td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--authfile <var>&lt;path&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Read authentication credentials from this file (default:
+<tt class=" docutils literal"><span class="pre">~/.s3ql/authinfo2)</span></tt></td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--debug <var>&lt;module&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>activate debugging output from &lt;module&gt;. Use <tt class=" docutils literal"><span class="pre">all</span></tt> to
+get debug messages from all modules. This option can be
+specified multiple times.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--quiet</span></kbd></td>
+<td>be really quiet</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>just print program version and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-L <var>&lt;name&gt;</var></span></kbd></td>
+<td>Filesystem label</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--blocksize <var>&lt;size&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Maximum block size in KB (default: 10240)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--plain</span></kbd></td>
+<td>Create unencrypted file system.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--force</span></kbd></td>
+<td>Overwrite any existing data.</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Unless you have specified the <tt class=" docutils literal"><span class="pre">--plain</span></tt> option, <tt class=" docutils literal"><span class="pre">mkfs.s3ql</span></tt> will ask
+you to enter an encryption password. This password will <em>not</em> be read
+from an authentication file specified with the <tt class="cmdopt docutils literal"><span class="pre">--authfile</span></tt>
+option to prevent accidental creation of an encrypted bucket.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="adm.html" title="Managing Buckets"
+             >next</a></li>
+        <li class="right" >
+          <a href="backends.html" title="Storage Backends"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

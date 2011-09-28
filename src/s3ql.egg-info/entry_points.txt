@@ -1,0 +1,12 @@
+[console_scripts]
+fsck.s3ql = s3ql.cli.fsck:main
+s3qllock = s3ql.cli.lock:main
+s3qladm = s3ql.cli.adm:main
+s3qlctrl = s3ql.cli.ctrl:main
+umount.s3ql = s3ql.cli.umount:main
+s3qlcp = s3ql.cli.cp:main
+s3qlrm = s3ql.cli.remove:main
+mount.s3ql = s3ql.cli.mount:main
+s3qlstat = s3ql.cli.statfs:main
+mkfs.s3ql = s3ql.cli.mkfs:main
+

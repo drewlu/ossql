@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>About S3QL &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="#" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="S3QL User’s Guide" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="S3QL User’s Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">About S3QL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-status">Development Status</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="about-s3ql">
+<h1>About S3QL<a class="headerlink" href="#about-s3ql" title="Permalink to this headline">¶</a></h1>
+<p>S3QL is a file system that stores all its data online using storage
+services like <a class="reference external" href="http://code.google.com/apis/storage/">Google Storage</a>, <a class="reference external" href="http://aws.amazon.com/s3AmazonS3">Amazon S3</a> or <a class="reference external" href="http://openstack.org/projects/storage/">OpenStack</a>. S3QL effectively provides
+a hard disk of dynamic, infinite capacity that can be accessed from
+any computer with internet access.</p>
+<p>S3QL is a standard conforming, full featured UNIX file system that is
+conceptually indistinguishable from any local file system.
+Furthermore, S3QL has additional features like compression,
+encryption, data de-duplication, immutable trees and snapshotting
+which make it especially suitable for online backup and archival.</p>
+<p>S3QL is designed to favor simplicity and elegance over performance and
+feature-creep. Care has been taken to make the source code as
+readable and serviceable as possible. Solid error detection and error
+handling have been included from the very first line, and S3QL comes
+with extensive automated test cases for all its components.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>Transparency.</strong> Conceptually, S3QL is indistinguishable from a
+local file system. For example, it supports hardlinks, symlinks,
+ACLs and standard unix permissions, extended attributes and file
+sizes up to 2 TB.</p>
+</li>
+<li><p class="first"><strong>Dynamic Size.</strong> The size of an S3QL file system grows and shrinks
+dynamically as required.</p>
+</li>
+<li><p class="first"><strong>Compression.</strong> Before storage, all data may compressed with the
+LZMA, bzip2 or deflate (gzip) algorithm.</p>
+</li>
+<li><p class="first"><strong>Encryption.</strong> After compression (but before upload), all data can
+AES encrypted with a 256 bit key. An additional SHA256 HMAC checksum
+is used to protect the data against manipulation.</p>
+</li>
+<li><p class="first"><strong>Data De-duplication.</strong> If several files have identical contents,
+the redundant data will be stored only once. This works across all
+files stored in the file system, and also if only some parts of the
+files are identical while other parts differ.</p>
+</li>
+<li><p class="first"><strong>Immutable Trees.</strong> Directory trees can be made immutable, so that
+their contents can no longer be changed in any way whatsoever. This
+can be used to ensure that backups can not be modified after they
+have been made.</p>
+</li>
+<li><p class="first"><strong>Copy-on-Write/Snapshotting.</strong> S3QL can replicate entire directory
+trees without using any additional storage space. Only if one of the
+copies is modified, the part of the data that has been modified will
+take up additional storage space. This can be used to create
+intelligent snapshots that preserve the state of a directory at
+different points in time using a minimum amount of space.</p>
+</li>
+<li><p class="first"><strong>High Performance independent of network latency.</strong> All operations
+that do not write or read file contents (like creating directories
+or moving, renaming, and changing permissions of files and
+directories) are very fast because they are carried out without any
+network transactions.</p>
+<p>S3QL achieves this by saving the entire file and directory structure
+in a database. This database is locally cached and the remote
+copy updated asynchronously.</p>
+</li>
+<li><p class="first"><strong>Support for low bandwidth connections.</strong> S3QL splits file contents
+into smaller blocks and caches blocks locally. This minimizes both
+the number of network transactions required for reading and writing
+data, and the amount of data that has to be transferred when only
+parts of a file are read or written.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="development-status">
+<h2>Development Status<a class="headerlink" href="#development-status" title="Permalink to this headline">¶</a></h2>
+<p>After two years of beta-testing by about 93 users did not reveal any
+data-critical bugs, S3QL was declared <strong>stable</strong> with the release of
+version 1.0 on May 13th, 2011. Note that this does not mean that S3QL
+is bug-free. S3QL still has several known, and probably many more
+unknown bugs. However, there is a high probability that these bugs
+will, although being inconvenient, not endanger any stored data.</p>
+<p>Please report any problems on the <a class="reference external" href="http://groups.google.com/group/s3ql">mailing list</a> or the <a class="reference external" href="http://code.google.com/p/s3ql/issues/list">issue tracker</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="installation.html" title="Installation"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="S3QL User’s Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Managing Buckets &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Mounting" href="mount.html" />
+    <link rel="prev" title="File System Creation" href="mkfs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mount.html" title="Mounting"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="mkfs.html" title="File System Creation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Managing Buckets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changing-the-passphrase">Changing the Passphrase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading-the-file-system">Upgrading the file system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deleting-a-file-system">Deleting a file system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#restoring-metadata-backups">Restoring Metadata Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="managing-buckets">
+<h1>Managing Buckets<a class="headerlink" href="#managing-buckets" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class=" docutils literal"><span class="pre">s3qladm</span></tt> command performs various operations on S3QL buckets.
+The file system contained in the bucket <em>must not be mounted</em> when
+using <tt class=" docutils literal"><span class="pre">s3qladm</span></tt> or things will go wrong badly.</p>
+<p>The syntax is</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qladm </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;action&gt;</span><span class="l"> </span><span class="nv">&lt;storage-url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>where <tt class="var docutils literal"><span class="pre">action</span></tt> may be either of <strong class="program">passphrase</strong>,
+<strong class="program">upgrade</strong>, <strong class="program">clear</strong> or <strong class="program">download-metadata</strong>.</p>
+<p>The <strong class="program">s3qladm</strong> accepts the following general options, no
+matter what specific action is being invoked:</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--debug <var>&lt;module&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>activate debugging output from &lt;module&gt;. Use <tt class=" docutils literal"><span class="pre">all</span></tt> to get
+debug messages from all modules. This option can be
+specified multiple times.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--quiet</span></kbd></td>
+<td>be really quiet</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--log <var>&lt;target&gt;</var></span></kbd></td>
+<td>Write logging info into this file. File will be rotated
+when it reaches 1 MB, and at most 5 old log files will be
+kept. Specify <tt class="docutils literal"><span class="pre">none</span></tt> to disable logging. Default:
+<tt class="docutils literal"><span class="pre">none</span></tt></td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--authfile <var>&lt;path&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Read authentication credentials from this file (default:
+<tt class=" docutils literal"><span class="pre">~/.s3ql/authinfo2)</span></tt></td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--cachedir <var>&lt;path&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Store cached data in this directory (default: <tt class=" docutils literal"><span class="pre">~/.s3ql)</span></tt></td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>just print program version and exit</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Hint: run <tt class=" docutils literal"><span class="pre">s3qladm</span> <span class="pre">&lt;action&gt;</span> <span class="pre">--help</span></tt> to get help on the additional
+arguments that the different actions take.</p>
+<div class="section" id="changing-the-passphrase">
+<h2>Changing the Passphrase<a class="headerlink" href="#changing-the-passphrase" title="Permalink to this headline">¶</a></h2>
+<p>To change the passphrase a bucket, use the <tt class=" docutils literal"><span class="pre">s3qladm</span></tt> command:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qladm passphrase  </span><span class="nv">&lt;storage url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>The passphrase can only be changed when the bucket is not mounted.</p>
+</div>
+<div class="section" id="upgrading-the-file-system">
+<h2>Upgrading the file system<a class="headerlink" href="#upgrading-the-file-system" title="Permalink to this headline">¶</a></h2>
+<p>If you have installed a new version of S3QL, it may sometimes be
+necessary to upgrade the file system metadata as well. Note that in
+this case the file system can no longer be accessed with older
+versions of S3QL after the upgrade.</p>
+<p>During the upgrade you have to make sure that the command is not
+interrupted, and that no one else tries to mount, check or upgrade the
+file system at the same time.</p>
+<p>To upgrade a file system from the previous to the current revision,
+execute</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qladm upgrade </span><span class="nv">&lt;storage url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="deleting-a-file-system">
+<h2>Deleting a file system<a class="headerlink" href="#deleting-a-file-system" title="Permalink to this headline">¶</a></h2>
+<p>A file system can be deleted with:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qladm clear </span><span class="nv">&lt;storage url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>This physically deletes all the data and file system structures.</p>
+</div>
+<div class="section" id="restoring-metadata-backups">
+<h2>Restoring Metadata Backups<a class="headerlink" href="#restoring-metadata-backups" title="Permalink to this headline">¶</a></h2>
+<p>If the most-recent copy of the file system metadata has been damaged
+irreparably, it is possible to restore one of the automatically
+created backup copies.</p>
+<p>The command</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qladm download-metadata </span><span class="nv">&lt;storage url&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>will give you a list of the available metadata backups and allow you
+to download them. This will create two new files in the current
+directory, ending in <tt class="docutils literal"><span class="pre">.db</span></tt> and <tt class="docutils literal"><span class="pre">.params</span></tt>. To actually use the
+downloaded backup, you need to move these files into the <tt class="docutils literal"><span class="pre">~/.s3ql/</span></tt>
+directory and run <tt class="docutils literal"><span class="pre">fsck.s3ql</span></tt>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You should probably not use this functionality without having asked
+for help on the mailing list first (see <a class="reference internal" href="resources.html#resources"><em>Further Resources / Getting Help</em></a>).</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mount.html" title="Mounting"
+             >next</a></li>
+        <li class="right" >
+          <a href="mkfs.html" title="File System Creation"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

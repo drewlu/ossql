@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="General Information" href="general.html" />
+    <link rel="prev" title="About S3QL" href="about.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="general.html" title="General Information"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="about.html" title="About S3QL"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-s3ql">Installing S3QL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>S3QL depends on several other programs and libraries that have to be
+installed first. The best method to satisfy these dependencies depends
+on your distribution. In some cases S3QL and all its dependencies can
+be installed with as little as three commands, while in other cases more work
+may be required.</p>
+<p>The <a class="reference external" href="http://code.google.com/p/s3ql/w/list">S3QL Wiki</a> contains
+installation instructions for quite a few different Linux
+distributions. You should only use the generic instructions in this
+manual if your distribution is not included in the <a class="reference external" href="http://code.google.com/p/s3ql/w/list?q=label:Installation">distribution-specific
+installation instructions</a> on the wiki.</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The following is a list of the programs and libraries required for
+running S3QL. Generally, you should first check if your distribution
+already provides a suitable packages and only install from source if
+that is not the case.</p>
+<ul>
+<li><p class="first">Kernel: Linux 2.6.9 or newer or FreeBSD with <a class="reference external" href="http://www.freshports.org/sysutils/fusefs-kmod/">FUSE4BSD</a>. Starting with
+kernel 2.6.26 you will get significantly better write performance,
+so under Linux you should actually use <em>2.6.26 or newer whenever
+possible</em>.</p>
+</li>
+<li><p class="first">The <a class="reference external" href="http://pypi.python.org/pypi/pycryptopp">PyCrypto++ Python Module</a>. To check if this module
+is installed, try to execute <tt class=" docutils literal"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">'import</span> <span class="pre">pycryptopp'</span></tt>.</p>
+</li>
+<li><p class="first">The <a class="reference external" href="http://pypi.python.org/pypi/argparse">argparse Python Module</a>. To check if this module is
+installed, try to execute <tt class=" docutils literal"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">'import</span> <span class="pre">argparse;</span> <span class="pre">print</span>
+<span class="pre">argparse.__version__'</span></tt>. If argparse is installed, this will print
+the version number. You need version 1.1 or later.</p>
+</li>
+<li><p class="first">The <a class="reference external" href="http://code.google.com/p/apsw/">APSW Python Module</a>. To check
+which (if any) version of APWS is installed, run the command</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">python -c &#39;import apsw; print apsw.apswversion(), apsw.sqlitelibversion()&#39;</span>
+</pre></div>
+</div>
+<p>If APSW is installed, this should print two version numbers which
+both have to be at least 3.7.0.</p>
+</li>
+<li><p class="first">The <a class="reference external" href="http://pypi.python.org/pypi/pyliblzma">PyLibLZMA Python module</a>. To check if this module
+is installed, execute <tt class=" docutils literal"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">'import</span> <span class="pre">lzma;</span> <span class="pre">print</span>
+<span class="pre">lzma.__version__'</span></tt>. This should print a version number. You need at
+least version 0.5.3.</p>
+</li>
+<li><p class="first">The <a class="reference external" href="http://code.google.com/p/python-llfuse/">Python LLFUSE module</a>. To check if this module
+is installed, execute <tt class=" docutils literal"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">'import</span> <span class="pre">llfuse;</span> <span class="pre">print</span>
+<span class="pre">llfuse.__version__'</span></tt>. This should print a version number. You need at
+least version 0.29.</p>
+<p>Note that earlier S3QL versions shipped with a builtin version of
+this module. If you are upgrading from such a version, make sure to
+completely remove the old S3QL version first.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="installing-s3ql">
+<span id="inst-s3ql"></span><h2>Installing S3QL<a class="headerlink" href="#installing-s3ql" title="Permalink to this headline">¶</a></h2>
+<p>To install S3QL itself, proceed as follows:</p>
+<ol class="arabic simple">
+<li>Download S3QL from <a class="reference external" href="http://code.google.com/p/s3ql/downloads/list">http://code.google.com/p/s3ql/downloads/list</a></li>
+<li>Unpack it into a folder of your choice</li>
+<li>Run <tt class=" docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></tt> to run a self-test. If this fails, ask
+for help on the <a class="reference external" href="http://groups.google.com/group/s3ql">mailing list</a> or report a bug in the
+<a class="reference external" href="http://code.google.com/p/s3ql/issues/list">issue tracker</a>.</li>
+</ol>
+<p>Now you have three options:</p>
+<ul class="simple">
+<li>You can run the S3QL commands from the <tt class=" docutils literal"><span class="pre">bin/</span></tt> directory.</li>
+<li>You can install S3QL system-wide for all users. To do that, you
+have to run <tt class=" docutils literal"><span class="pre">sudo</span> <span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></tt>.</li>
+<li>You can install S3QL into <tt class=" docutils literal"><span class="pre">~/.local</span></tt> by executing <tt class=" docutils literal"><span class="pre">python</span>
+<span class="pre">setup.py</span> <span class="pre">install</span> <span class="pre">--user</span></tt>. In this case you should make sure that
+<tt class=" docutils literal"><span class="pre">~/.local/bin</span></tt> is in your <tt class=" docutils literal"><span class="pre">$PATH</span></tt> environment variable.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="general.html" title="General Information"
+             >next</a></li>
+        <li class="right" >
+          <a href="about.html" title="About S3QL"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

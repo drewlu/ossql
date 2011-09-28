@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The expire_backups command &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="../index.html" />
+    <link rel="up" title="Manpages" href="index.html" />
+    <link rel="next" title="Further Resources / Getting Help" href="../resources.html" />
+    <link rel="prev" title="The pcp command" href="pcp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../resources.html" title="Further Resources / Getting Help"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="pcp.html" title="The pcp command"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Known Issues</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manpages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mkfs.html">The <strong class="program">mkfs.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adm.html">The <strong class="program">s3qladm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mount.html">The <strong class="program">mount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stat.html">The <strong class="program">s3qlstat</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctrl.html">The <strong class="program">s3qlctrl</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cp.html">The <strong class="program">s3qlcp</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rm.html">The <strong class="program">s3qlrm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lock.html">The <strong class="program">s3qllock</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="umount.html">The <strong class="program">umount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsck.html">The <strong class="program">fsck.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcp.html">The <strong class="program">pcp</strong> command</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The <strong class="program">expire_backups</strong> command</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-expire-backups-command">
+<h1>The <strong class="program">expire_backups</strong> command<a class="headerlink" href="#the-expire-backups-command" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">expire_backups </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;age&gt;</span><span class="l"> </span><span class="ge">[&lt;age&gt; ...]</span><span class="l"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">expire_backups</strong> command intelligently remove old backups that are no
+longer needed.</p>
+<p>To define what backups you want to keep for how long, you define a
+number of <em>age ranges</em>. <strong class="program">expire_backups</strong> ensures that you
+will have at least one backup in each age range at all times. It will
+keep exactly as many backups as are required for that and delete any
+backups that become redundant.</p>
+<p>Age ranges are specified by giving a list of range boundaries in terms
+of backup cycles. Every time you create a new backup, the existing
+backups age by one cycle.</p>
+<p>Example: when <strong class="program">expire_backups</strong> is called with the age range
+definition <tt class="docutils literal"><span class="pre">1</span> <span class="pre">3</span> <span class="pre">7</span> <span class="pre">14</span> <span class="pre">31</span></tt>, it will guarantee that you always have the
+following backups available:</p>
+<ol class="arabic simple">
+<li>A backup that is 0 to 1 cycles old (i.e, the most recent backup)</li>
+<li>A backup that is 1 to 3 cycles old</li>
+<li>A backup that is 3 to 7 cycles old</li>
+<li>A backup that is 7 to 14 cycles old</li>
+<li>A backup that is 14 to 31 cycles old</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you do backups in fixed intervals, then one cycle will be
+equivalent to the backup interval. The advantage of specifying the
+age ranges in terms of backup cycles rather than days or weeks is
+that it allows you to gracefully handle irregular backup intervals.
+Imagine that for some reason you do not turn on your computer for
+one month. Now all your backups are at least a month old, and if you
+had specified the above backup strategy in terms of absolute ages,
+they would all be deleted! Specifying age ranges in terms of backup
+cycles avoids these sort of problems.</p>
+</div>
+<p><strong class="program">expire_backups</strong> usage is simple. It requires backups to have
+names of the forms <tt class="docutils literal"><span class="pre">year-month-day_hour:minute:seconds</span></tt>
+(<tt class="docutils literal"><span class="pre">YYYY-MM-DD_HH:mm:ss</span></tt>) and works on all backups in the current
+directory. So for the above backup strategy, the correct invocation
+would be:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">expire_backups.py 1 3 7 14 31</span>
+</pre></div>
+</div>
+<p>When storing your backups on an S3QL file system, you probably want to
+specify the <tt class="docutils literal"><span class="pre">--use-s3qlrm</span></tt> option as well. This tells
+<strong class="program">expire_backups</strong> to use the <a class="reference internal" href="../special.html#s3qlrm"><em>s3qlrm</em></a> command to
+delete directories.</p>
+<p><strong class="program">expire_backups</strong> uses a &#8220;state file&#8221; to keep track which
+backups are how many cycles old (since this cannot be inferred from
+the dates contained in the directory names). The standard name for
+this state file is <tt class="file docutils literal"><span class="pre">.expire_backups.dat</span></tt>. If this file gets
+damaged or deleted, <strong class="program">expire_backups</strong> no longer knows the ages
+of the backups and refuses to work. In this case you can use the
+<tt class="cmdopt docutils literal"><span class="pre">--reconstruct-state</span></tt> option to try to reconstruct the state
+from the backup dates. However, the accuracy of this reconstruction
+depends strongly on how rigorous you have been with making backups (it
+is only completely correct if the time between subsequent backups has
+always been exactly the same), so it&#8217;s generally a good idea not to
+tamper with the state file.</p>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">expire_backups</strong> command accepts the following options:</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--quiet</span></kbd></td>
+<td>be really quiet</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--debug</span></kbd></td>
+<td>activate debugging output</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>just print program version and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--state <var>&lt;file&gt;</var></span></kbd></td>
+<td>File to save state information in (default:
+&#8221;.expire_backups.dat&#8221;)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-n</span></kbd></td>
+<td>Dry run. Just show which backups would be deleted.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--reconstruct-state</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Try to reconstruct a missing state file from backup
+dates.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--use-s3qlrm</span></kbd></td>
+<td>Use <tt class=" docutils literal"><span class="pre">s3qlrm</span></tt> command to delete backups.</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit Status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<p><strong class="command">expire_backups</strong> returns exit code 0 if the operation succeeded and 1 if some
+error occured.</p>
+</div>
+<div class="section" id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<p><strong class="command">expire_backups</strong> is shipped as part of S3QL, <a class="reference external" href="http://code.google.com/p/s3ql/">http://code.google.com/p/s3ql/</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../resources.html" title="Further Resources / Getting Help"
+             >next</a></li>
+        <li class="right" >
+          <a href="pcp.html" title="The pcp command"
+             >previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

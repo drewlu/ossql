@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tips &amp; Tricks &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Known Issues" href="issues.html" />
+    <link rel="prev" title="Contributed Programs" href="contrib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="issues.html" title="Known Issues"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="contrib.html" title="Contributed Programs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Tips &amp; Tricks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ssh-backend">SSH Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#permanently-mounted-backup-file-system">Permanently mounted backup file system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#improving-copy-performance">Improving copy performance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tips-tricks">
+<h1>Tips &amp; Tricks<a class="headerlink" href="#tips-tricks" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ssh-backend">
+<span id="ssh-tipp"></span><h2>SSH Backend<a class="headerlink" href="#ssh-backend" title="Permalink to this headline">¶</a></h2>
+<p>By combining S3QL&#8217;s local backend with <a class="reference external" href="http://fuse.sourceforge.net/sshfs.html">sshfs</a>, it is possible to store an
+S3QL file system on arbitrary SSH servers: first mount the remote
+target directory into the local filesystem,</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">sshfs user@my.server.com:/mnt/s3ql /mnt/sshfs</span>
+</pre></div>
+</div>
+<p>and then give the mountpoint to S3QL as a local destination:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">mount.s3ql local:///mnt/sshfs/mybucket /mnt/s3ql</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="permanently-mounted-backup-file-system">
+<h2>Permanently mounted backup file system<a class="headerlink" href="#permanently-mounted-backup-file-system" title="Permalink to this headline">¶</a></h2>
+<p>If you use S3QL as a backup file system, it can be useful to mount the
+file system permanently (rather than just mounting it for a backup and
+unmounting it afterwards). Especially if your file system becomes
+large, this saves you long mount- and unmount times if you only want
+to restore a single file.</p>
+<p>If you decide to do so, you should make sure to</p>
+<ul class="simple">
+<li>Use <a class="reference internal" href="special.html#s3qllock"><em>s3qllock</em></a> to ensure that backups are immutable
+after they have been made.</li>
+<li>Call <a class="reference internal" href="special.html#s3qlctrl"><em>s3qlctrl upload-meta</em></a> right after a every
+backup to make sure that the newest metadata is stored safely (if
+you do backups often enough, this may also allow you to set the
+<tt class="cmdopt docutils literal"><span class="pre">--metadata-upload-interval</span></tt> option of <strong class="program">mount.s3ql</strong>
+to zero).</li>
+</ul>
+</div>
+<div class="section" id="improving-copy-performance">
+<span id="copy-performance"></span><h2>Improving copy performance<a class="headerlink" href="#improving-copy-performance" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following applies only when copying data <strong>from</strong> an S3QL file
+system, <strong>not</strong> when copying data <strong>to</strong> an S3QL file system.</p>
+</div>
+<p>If you want to copy a lot of smaller files <em>from</em> an S3QL file system
+(e.g. for a system restore) you will probably notice that the
+performance is rather bad.</p>
+<p>The reason for this is intrinsic to the way S3QL works. Whenever you
+read a file, S3QL first has to retrieve this file over the network
+from the storage backend. This takes a minimum amount of time (the
+network latency), no matter how big or small the file is. So when you
+copy lots of small files, 99% of the time is actually spend waiting
+for network data.</p>
+<p>Theoretically, this problem is easy to solve: you just have to copy
+several files at the same time. In practice, however, almost all unix
+utilities (<tt class="docutils literal"><span class="pre">cp</span></tt>, <tt class="docutils literal"><span class="pre">rsync</span></tt>, <tt class="docutils literal"><span class="pre">tar</span></tt> and friends) insist on copying
+data one file at a time. This makes a lot of sense when copying data
+on the local hard disk, but in case of S3QL this is really
+unfortunate.</p>
+<p>The best workaround that has been found so far is to copy files by
+starting several rsync processes at once and use exclusion rules to
+make sure that they work on different sets of files.</p>
+<p>For example, the following script will start 3 rsync instances. The
+first instance handles all filenames starting with a-f, the second the
+filenames from g-l and the third covers the rest. The <tt class="docutils literal"><span class="pre">+</span> <span class="pre">*/</span></tt> rule
+ensures that every instance looks into all directories.</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+
+<span class="l">RSYNC_ARGS=&quot;-aHv /mnt/s3ql/ /home/restore/&quot;</span>
+
+<span class="l">rsync -f &quot;+ */&quot; -f &quot;-! </span><span class="ge">[a-f]</span><span class="l">*&quot; $RSYNC_ARGS &amp;</span>
+<span class="l">rsync -f &quot;+ */&quot; -f &quot;-! </span><span class="ge">[g-l]</span><span class="l">*&quot; $RSYNC_ARGS &amp;</span>
+<span class="l">rsync -f &quot;+ */&quot; -f &quot;- </span><span class="ge">[a-l]</span><span class="l">*&quot; $RSYNC_ARGS &amp;</span>
+
+<span class="l">wait</span>
+</pre></div>
+</div>
+<p>The optimum number of parallel processes depends on your network
+connection and the size of the files that you want to transfer.
+However, starting about 10 processes seems to be a good compromise
+that increases performance dramatically in almost all situations.</p>
+<p>S3QL comes with a script named <tt class="docutils literal"><span class="pre">pcp.py</span></tt> in the <tt class="docutils literal"><span class="pre">contrib</span></tt> directory
+that can be used to transfer files in parallel without having to write
+an explicit script first. See the description of <a class="reference internal" href="contrib.html#pcp"><em>pcp.py</em></a> for
+details.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="issues.html" title="Known Issues"
+             >next</a></li>
+        <li class="right" >
+          <a href="contrib.html" title="Contributed Programs"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

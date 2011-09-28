@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The s3qlctrl command &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="../index.html" />
+    <link rel="up" title="Manpages" href="index.html" />
+    <link rel="next" title="The s3qlcp command" href="cp.html" />
+    <link rel="prev" title="The s3qlstat command" href="stat.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="cp.html" title="The s3qlcp command"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="stat.html" title="The s3qlstat command"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Known Issues</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Manpages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mkfs.html">The <strong class="program">mkfs.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adm.html">The <strong class="program">s3qladm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mount.html">The <strong class="program">mount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stat.html">The <strong class="program">s3qlstat</strong> command</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The <strong class="program">s3qlctrl</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cp.html">The <strong class="program">s3qlcp</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rm.html">The <strong class="program">s3qlrm</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lock.html">The <strong class="program">s3qllock</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="umount.html">The <strong class="program">umount.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsck.html">The <strong class="program">fsck.s3ql</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcp.html">The <strong class="program">pcp</strong> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="expire_backups.html">The <strong class="program">expire_backups</strong> command</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-s3qlctrl-command">
+<h1>The <strong class="program">s3qlctrl</strong> command<a class="headerlink" href="#the-s3qlctrl-command" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qlctrl </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;action&gt;</span><span class="l"> </span><span class="nv">&lt;mountpoint&gt;</span><span class="l"> ...</span>
+</pre></div>
+</div>
+<p>where <tt class="var docutils literal"><span class="pre">action</span></tt> may be either of <strong class="program">flushcache</strong>,
+<strong class="program">upload-meta</strong>, <strong class="program">cachesize</strong> or
+<strong class="program">log-metadata</strong>.</p>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">s3qlctrl</strong> command performs various actions on the S3QL file system mounted
+in <tt class="var docutils literal"><span class="pre">mountpoint</span></tt>.</p>
+<p><strong class="command">s3qlctrl</strong> can only be called by the user that mounted the file system
+and (if the file system was mounted with <tt class="cmdopt docutils literal"><span class="pre">--allow-other</span></tt> or
+<tt class="cmdopt docutils literal"><span class="pre">--allow-root</span></tt>) the root user. This limitation might be
+removed in the future (see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=155">issue 155</a>).</p>
+<p>The following actions may be specified:</p>
+<dl class="docutils">
+<dt>flushcache</dt>
+<dd>Uploads all changed file data to the backend.</dd>
+<dt>upload-meta</dt>
+<dd>Upload metadata to the backend. All file system operations will
+block while a snapshot of the metadata is prepared for upload.</dd>
+<dt>cachesize</dt>
+<dd><p class="first">Changes the cache size of the file system. This action requires an
+additional argument that specifies the new cache size in kB, so the
+complete command line is:</p>
+<div class="last highlight-commandline"><div class="highlight"><pre><span class="l">s3qlctrl </span><span class="ge">[options]</span><span class="l"> cachesize </span><span class="nv">&lt;mountpoint&gt;</span><span class="l"> </span><span class="nv">&lt;new-cache-size&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+</dd>
+<dt>log</dt>
+<dd><p class="first">Change the amount of information that is logged into
+<tt class="file docutils literal"><span class="pre">~/.s3ql/mount.log</span></tt> file. The complete syntax is:</p>
+<div class="highlight-commandline"><pre>s3qlctrl [options] log &lt;mountpoint&gt; &lt;level&gt; [&lt;module&gt; [&lt;module&gt; ...]]</pre>
+</div>
+<p class="last">here <tt class="var docutils literal"><span class="pre">level</span></tt> is the desired new log level and may be either of
+<em>debug</em>, <em>info</em> or <em>warn</em>. One or more <tt class="var docutils literal"><span class="pre">module</span></tt> may only be
+specified with the <em>debug</em> level and allow to restrict the debug
+output to just the listed modules.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="command">s3qlctrl</strong> command also accepts the following options, no matter
+what specific action is being invoked:</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--debug</span></kbd></td>
+<td>activate debugging output</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--quiet</span></kbd></td>
+<td>be really quiet</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>just print program version and exit</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Hint: run <tt class=" docutils literal"><span class="pre">s3qlctrl</span> <span class="pre">&lt;action&gt;</span> <span class="pre">--help</span></tt> to get help on the additional
+arguments that the different actions take.</p>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit Status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<p><strong class="command">s3qlctrl</strong> returns exit code 0 if the operation succeeded and 1 if some
+error occured.</p>
+</div>
+<div class="section" id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<p>The S3QL homepage is at <a class="reference external" href="http://code.google.com/p/s3ql/">http://code.google.com/p/s3ql/</a>.</p>
+<p>The full S3QL documentation should also be installed somewhere on your
+system, conventional locations are <tt class="file docutils literal"><span class="pre">/usr/share/doc/s3ql</span></tt> or
+<tt class="file docutils literal"><span class="pre">/usr/local/doc/s3ql</span></tt>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="cp.html" title="The s3qlcp command"
+             >next</a></li>
+        <li class="right" >
+          <a href="stat.html" title="The s3qlstat command"
+             >previous</a> |</li>
+        <li><a href="../index.html">S3QL v1.1.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Manpages</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

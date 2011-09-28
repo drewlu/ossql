@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Known Issues &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Manpages" href="man/index.html" />
+    <link rel="prev" title="Tips &amp; Tricks" href="tips.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="man/index.html" title="Manpages"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="tips.html" title="Tips &amp; Tricks"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="known-issues">
+<h1>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">S3QL does not verify TLS/SSL server certificates, so a
+man-in-the-middle attack is principally possible. See <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=267">issue 267</a> for more
+details.</p>
+</li>
+<li><p class="first">S3QL is rather slow when an application tries to write data in
+unreasonably small chunks. If a 1 MB file is copied in chunks of 1
+KB, this will take more than 10 times as long as when it&#8217;s copied
+with the (recommended) chunk size of 128 KB.</p>
+<p>This is a limitation of the FUSE library (which does not yet support
+write caching) which will hopefully be addressed in some future FUSE
+version.</p>
+<p>Most applications, including e.g. GNU <tt class=" docutils literal"><span class="pre">cp</span></tt> and <tt class=" docutils literal"><span class="pre">rsync</span></tt>, use
+reasonably large buffers and are therefore not affected by this
+problem and perform very efficient on S3QL file systems.</p>
+<p>However, if you encounter unexpectedly slow performance with a
+specific program, this might be due to the program using very small
+write buffers. Although this is not really a bug in the program,
+it might be worth to ask the program&#8217;s authors for help.</p>
+</li>
+<li><p class="first">S3QL always updates file and directory access times as if the <tt class="docutils literal"><span class="pre">relatime</span></tt>
+mount option has been specified: the access time (&#8220;atime&#8221;) is only updated
+if it is currently earlier than either the status change time
+(&#8220;ctime&#8221;) or modification time (&#8220;mtime&#8221;).</p>
+</li>
+<li><p class="first">S3QL directories always have an <tt class=" docutils literal"><span class="pre">st_nlink</span></tt> value of 1. This may confuse
+programs that rely on directories having <tt class=" docutils literal"><span class="pre">st_nlink</span></tt> values of <em>(2 +
+number of sub directories)</em>.</p>
+<p>Note that this is not a bug in S3QL. Including sub directories in
+the <tt class=" docutils literal"><span class="pre">st_nlink</span></tt> value is a Unix convention, but by no means a
+requirement. If an application blindly relies on this convention
+being followed, then this is a bug in the application.</p>
+<p>A prominent example are early versions of GNU find, which required
+the <tt class=" docutils literal"><span class="pre">--noleaf</span></tt> option to work correctly on S3QL file systems. This
+bug has already been fixed in recent find versions.</p>
+</li>
+<li><p class="first">In theory, S3QL is not fully compatible with NFS. Since S3QL does
+not support <em>inode generation numbers</em>, NFS clients may (once again,
+in theory) accidentally read or write the wrong file in the
+following situation:</p>
+<ol class="arabic simple">
+<li>An S3QL file system is exported over NFS</li>
+<li>NFS client 1 opens a file A</li>
+<li>Another NFS client 2 (or the server itself) deletes file A (without
+client 1 knowing about this)</li>
+<li>A new file B is created by either of the clients or the server</li>
+<li>NFS client 1 tries to read or write file A (which has actually already been deleted).</li>
+</ol>
+<p>In this situation it is possible that NFS client 1 actually writes
+or reads the newly created file B instead. The chances of this are 1
+to (2^32 - <em>n</em>) where <em>n</em> is the total number of directory entries
+in the S3QL file system (as displayed by <tt class=" docutils literal"><span class="pre">s3qlstat</span></tt>).</p>
+<p>Luckily enough, as long as you have less than about 2 thousand
+million directory entries (2^31), the chances for this are totally
+irrelevant and you don&#8217;t have to worry about it.</p>
+</li>
+<li><p class="first">The <tt class=" docutils literal"><span class="pre">umount</span></tt> and <tt class=" docutils literal"><span class="pre">fusermount</span> <span class="pre">-u</span></tt> commands will <em>not</em> block until all
+data has been uploaded to the backend. (this is a FUSE limitation
+that will hopefully be removed in the future, see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=159">issue 159</a>). If you use
+either command to unmount an S3QL file system, you have to take care
+to explicitly wait for the <tt class=" docutils literal"><span class="pre">mount.s3ql</span></tt> process to terminate before
+you shut down or restart the system. Therefore it is generally not a
+good idea to mount an S3QL file system in <tt class=" docutils literal"><span class="pre">/etc/fstab</span></tt> (you should
+use a dedicated init script instead).</p>
+</li>
+<li><p class="first">S3QL relies on the backends not to run out of space. This is a given
+for big storage providers like Amazon S3, but you may stumble upon
+this if you store buckets e.g. on smaller servers or servies.</p>
+<p>If there is no space left in the backend, attempts to write more
+data into the S3QL file system will fail and the file system will be
+in an inconsistent state and require a file system check (and you
+should make sure to make space available in the backend before
+running the check).</p>
+<p>Unfortunately, there is no way to handle insufficient space in the
+backend without leaving the file system inconsistent. Since
+S3QL first writes data into the cache, it can no longer return an
+error when it later turns out that the cache can not be committed to
+the backend.</p>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="man/index.html" title="Manpages"
+             >next</a></li>
+        <li class="right" >
+          <a href="tips.html" title="Tips &amp; Tricks"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

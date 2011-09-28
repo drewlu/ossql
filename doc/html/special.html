@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced S3QL Features &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="Unmounting" href="umount.html" />
+    <link rel="prev" title="Mounting" href="mount.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="umount.html" title="Unmounting"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="mount.html" title="Mounting"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Storage Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Advanced S3QL Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#snapshotting-and-copy-on-write">Snapshotting and Copy-on-Write</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-statistics">Getting Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#immutable-trees">Immutable Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fast-recursive-removal">Fast Recursive Removal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-configuration">Runtime Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-s3ql-features">
+<h1>Advanced S3QL Features<a class="headerlink" href="#advanced-s3ql-features" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="snapshotting-and-copy-on-write">
+<span id="s3qlcp"></span><h2>Snapshotting and Copy-on-Write<a class="headerlink" href="#snapshotting-and-copy-on-write" title="Permalink to this headline">¶</a></h2>
+<p>The command <tt class=" docutils literal"><span class="pre">s3qlcp</span></tt> can be used to duplicate a directory tree without
+physically copying the file contents. This is made possible by the
+data de-duplication feature of S3QL.</p>
+<p>The syntax of <tt class=" docutils literal"><span class="pre">s3qlcp</span></tt> is:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qlcp </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;src&gt;</span><span class="l"> </span><span class="nv">&lt;target&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>This will replicate the contents of the directory <tt class=" docutils literal"><span class="pre">&lt;src&gt;</span></tt> in the
+directory <tt class=" docutils literal"><span class="pre">&lt;target&gt;</span></tt>. <tt class=" docutils literal"><span class="pre">&lt;src&gt;</span></tt> has to be an existing directory and
+<tt class=" docutils literal"><span class="pre">&lt;target&gt;</span></tt> must not exist. Moreover, both directories have to be
+within the same S3QL file system.</p>
+<p>The replication will not take any additional space. Only if one of
+directories is modified later on, the modified data will take
+additional storage space.</p>
+<p><tt class=" docutils literal"><span class="pre">s3qlcp</span></tt> can only be called by the user that mounted the file system
+and (if the file system was mounted with <tt class=" docutils literal"><span class="pre">--allow-other</span></tt> or <tt class=" docutils literal"><span class="pre">--allow-root</span></tt>)
+the root user. This limitation might be removed in the future (see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=155">issue 155</a>).</p>
+<p>Note that:</p>
+<ul class="simple">
+<li>After the replication, both source and target directory will still
+be completely ordinary directories. You can regard <tt class=" docutils literal"><span class="pre">&lt;src&gt;</span></tt> as a
+snapshot of <tt class=" docutils literal"><span class="pre">&lt;target&gt;</span></tt> or vice versa. However, the most common
+usage of <tt class=" docutils literal"><span class="pre">s3qlcp</span></tt> is to regularly duplicate the same source
+directory, say <tt class=" docutils literal"><span class="pre">documents</span></tt>, to different target directories. For a
+e.g. monthly replication, the target directories would typically be
+named something like <tt class=" docutils literal"><span class="pre">documents_January</span></tt> for the replication in
+January, <tt class=" docutils literal"><span class="pre">documents_February</span></tt> for the replication in February etc.
+In this case it is clear that the target directories should be
+regarded as snapshots of the source directory.</li>
+<li>Exactly the same effect could be achieved by an ordinary copy
+program like <tt class=" docutils literal"><span class="pre">cp</span> <span class="pre">-a</span></tt>. However, this procedure would be orders of
+magnitude slower, because <tt class=" docutils literal"><span class="pre">cp</span></tt> would have to read every file
+completely (so that S3QL had to fetch all the data over the network
+from the backend) before writing them into the destination folder.</li>
+</ul>
+<div class="section" id="snapshotting-vs-hardlinking">
+<h3>Snapshotting vs Hardlinking<a class="headerlink" href="#snapshotting-vs-hardlinking" title="Permalink to this headline">¶</a></h3>
+<p>Snapshot support in S3QL is inspired by the hardlinking feature that
+is offered by programs like <a class="reference external" href="http://www.samba.org/rsync">rsync</a> or
+<a class="reference external" href="http://savannah.nongnu.org/projects/storebackup">storeBackup</a>.
+These programs can create a hardlink instead of copying a file if an
+identical file already exists in the backup. However, using hardlinks
+has two large disadvantages:</p>
+<ul class="simple">
+<li>backups and restores always have to be made with a special program
+that takes care of the hardlinking. The backup must not be touched
+by any other programs (they may make changes that inadvertently
+affect other hardlinked files)</li>
+<li>special care needs to be taken to handle files which are already
+hardlinked (the restore program needs to know that the hardlink was
+not just introduced by the backup program to safe space)</li>
+</ul>
+<p>S3QL snapshots do not have these problems, and they can be used with
+any backup program.</p>
+</div>
+</div>
+<div class="section" id="getting-statistics">
+<span id="s3qlstat"></span><h2>Getting Statistics<a class="headerlink" href="#getting-statistics" title="Permalink to this headline">¶</a></h2>
+<p>You can get more information about a mounted S3QL file system with the
+<tt class=" docutils literal"><span class="pre">s3qlstat</span></tt> command. It has the following syntax:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qlstat </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;mountpoint&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>Probably the most interesting numbers are the total size of your data,
+the total size after duplication, and the final size after
+de-duplication and compression.</p>
+<p><tt class=" docutils literal"><span class="pre">s3qlstat</span></tt> can only be called by the user that mounted the file system
+and (if the file system was mounted with <tt class=" docutils literal"><span class="pre">--allow-other</span></tt> or <tt class=" docutils literal"><span class="pre">--allow-root</span></tt>)
+the root user. This limitation might be removed in the future (see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=155">issue 155</a>).</p>
+<p>For a full list of available options, run <tt class=" docutils literal"><span class="pre">s3qlstat</span> <span class="pre">--help</span></tt>.</p>
+</div>
+<div class="section" id="immutable-trees">
+<span id="s3qllock"></span><h2>Immutable Trees<a class="headerlink" href="#immutable-trees" title="Permalink to this headline">¶</a></h2>
+<p>The command <strong class="program">s3qllock</strong> can be used to make a directory tree
+immutable. Immutable trees can no longer be changed in any way
+whatsoever. You can not add new files or directories and you can not
+change or delete existing files and directories. The only way to get
+rid of an immutable tree is to use the <strong class="program">s3qlrm</strong> command (see
+below).</p>
+<p>For example, to make the directory tree beneath the directory
+<tt class="docutils literal"><span class="pre">2010-04-21</span></tt> immutable, execute</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qllock 2010-04-21</span>
+</pre></div>
+</div>
+<p>Immutability is a feature designed for backups. Traditionally, backups
+have been made on external tape drives. Once a backup was made, the
+tape drive was removed and locked somewhere in a shelf. This has the
+great advantage that the contents of the backup are now permanently
+fixed. Nothing (short of physical destruction) can change or delete
+files in the backup.</p>
+<p>In contrast, when backing up into an online storage system like S3QL,
+all backups are available every time the file system is mounted.
+Nothing prevents a file in an old backup from being changed again
+later on. In the worst case, this may make your entire backup system
+worthless. Imagine that your system gets infected by a nasty virus
+that simply deletes all files it can find &#8211; if the virus is active
+while the backup file system is mounted, the virus will destroy all
+your old backups as well!</p>
+<p>Even if the possibility of a malicious virus or trojan horse is
+excluded, being able to change a backup after it has been made is
+generally not a good idea. A common S3QL use case is to keep the file
+system mounted at all times and periodically create backups with
+<strong class="program">rsync -a</strong>. This allows every user to recover her files from a
+backup without having to call the system administrator. However, this
+also allows every user to accidentally change or delete files <em>in</em> one
+of the old backups.</p>
+<p>Making a backup immutable protects you against all these problems.
+Unless you happen to run into a virus that was specifically programmed
+to attack S3QL file systems, backups can be neither deleted nor
+changed after they have been made immutable.</p>
+</div>
+<div class="section" id="fast-recursive-removal">
+<span id="s3qlrm"></span><h2>Fast Recursive Removal<a class="headerlink" href="#fast-recursive-removal" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">s3qlrm</span></tt> command can be used to recursively delete files and
+directories on an S3QL file system. Although <tt class="docutils literal"><span class="pre">s3qlrm</span></tt> is faster than
+using e.g. <tt class="docutils literal"><span class="pre">rm</span> <span class="pre">-r</span></tt>, the main reason for its existence is that it
+allows you to delete immutable trees as well. The syntax is rather
+simple:</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qlrm </span><span class="nv">&lt;directory&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>Be warned that there is no additional confirmation. The directory will
+be removed entirely and immediately.</p>
+</div>
+<div class="section" id="runtime-configuration">
+<span id="s3qlctrl"></span><h2>Runtime Configuration<a class="headerlink" href="#runtime-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class=" docutils literal"><span class="pre">s3qlctrl</span></tt> can be used to control a mounted S3QL file system. Its
+syntax is</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3qlctrl </span><span class="ge">[options]</span><span class="l"> </span><span class="nv">&lt;action&gt;</span><span class="l"> </span><span class="nv">&lt;mountpoint&gt;</span><span class="l"> ...</span>
+</pre></div>
+</div>
+<p><tt class=" docutils literal"><span class="pre">&lt;mountpoint&gt;</span></tt> must be the location of a mounted S3QL file system.
+For a list of valid options, run <tt class=" docutils literal"><span class="pre">s3qlctrl</span> <span class="pre">--help</span></tt>. <tt class=" docutils literal"><span class="pre">&lt;action&gt;</span></tt>
+may be either of:</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">flushcache:</th><td class="field-body">Flush file system cache. The command blocks until the cache has
+been flushed.</td>
+</tr>
+<tr class="field"><th class="field-name">log:</th><td class="field-body">Change log level.</td>
+</tr>
+<tr class="field"><th class="field-name">cachesize:</th><td class="field-body">Change file system cache size.</td>
+</tr>
+<tr class="field"><th class="field-name">upload-meta:</th><td class="field-body">Trigger a metadata upload.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="umount.html" title="Unmounting"
+             >next</a></li>
+        <li class="right" >
+          <a href="mount.html" title="Mounting"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Storage Backends &mdash; S3QL v1.1.4 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="S3QL v1.1.4 documentation" href="index.html" />
+    <link rel="next" title="File System Creation" href="mkfs.html" />
+    <link rel="prev" title="General Information" href="general.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mkfs.html" title="File System Creation"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="general.html" title="General Information"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About S3QL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General Information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Storage Backends</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#google-storage">Google Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#amazon-s3">Amazon S3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#s3-compatible">S3 compatible</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local">Local</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ssh-sftp">SSH/SFTP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mkfs.html">File System Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adm.html">Managing Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mount.html">Mounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special.html">Advanced S3QL Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="umount.html">Unmounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fsck.html">Checking for Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributed Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="man/index.html">Manpages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Further Resources / Getting Help</a></li>
+</ul>
+
+          
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="storage-backends">
+<span id="id1"></span><h1>Storage Backends<a class="headerlink" href="#storage-backends" title="Permalink to this headline">¶</a></h1>
+<p>The following backends are currently available in S3QL:</p>
+<div class="section" id="google-storage">
+<h2>Google Storage<a class="headerlink" href="#google-storage" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://code.google.com/apis/storage/">Google Storage</a> is an online
+storage service offered by Google. It is the most feature-rich service
+supported by S3QL and S3QL offers the best performance when used with
+the Google Storage backend.</p>
+<p>To use the Google Storage backend, you need to have (or sign up for) a
+Google account, and then <a class="reference external" href="http://code.google.com/apis/storage/docs/signup.html">activate Google Storage</a> for your
+account. The account is free, you will pay only for the amount of
+storage and traffic that you actually use. Once you have created the
+account, make sure to <a class="reference external" href="http://code.google.com/apis/storage/docs/reference/v1/apiversion1.html#enabling">activate legacy access</a>.</p>
+<p>To create a Google Storage bucket, you can use e.g. the <a class="reference external" href="https://sandbox.google.com/storage/">Google
+Storage Manager</a>. The
+storage URL for accessing the bucket in S3QL is then</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">gs://</span><span class="nv">&lt;bucketname&gt;</span><span class="l">/</span><span class="nv">&lt;prefix&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>Here <em>bucketname</em> is the name of the bucket, and <em>prefix</em> can be
+an arbitrary prefix that will be prepended to all object names used by
+S3QL. This allows you to store several S3QL file systems in the same
+Google Storage bucket.</p>
+<p>Note that the backend login and password for accessing your Google
+Storage bucket are not your Google account name and password, but the
+<em>Google Storage developer access key</em> and <em>Google Storage developer
+secret</em> that you can manage with the <a class="reference external" href="https://code.google.com/apis/console/#:storage:legacy">Google Storage key management
+tool</a>.</p>
+<p>If you would like S3QL to connect using HTTPS instead of standard
+HTTP, start the storage url with <tt class="docutils literal"><span class="pre">gss://</span></tt> instead of <tt class="docutils literal"><span class="pre">gs://</span></tt>. Note
+that at this point S3QL does not perform any server certificate
+validation (see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=267">issue 267</a>).</p>
+</div>
+<div class="section" id="amazon-s3">
+<h2>Amazon S3<a class="headerlink" href="#amazon-s3" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://aws.amazon.com/s3">Amazon S3</a> is the online storage service
+offered by <a class="reference external" href="http://aws.amazon.com/">Amazon Web Services (AWS)</a>. To
+use the S3 backend, you first need to sign up for an AWS account. The
+account is free, you will pay only for the amount of storage and
+traffic that you actually use. After that, you need to create a bucket
+that will hold the S3QL file system, e.g. using the <a class="reference external" href="https://console.aws.amazon.com/s3/home">AWS Management
+Console</a>. For best
+performance, it is recommend to create the bucket in the
+geographically closest storage region, but not the US Standard
+region (see below).</p>
+<p>The storage URL for accessing S3 buckets in S3QL has the form</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3://</span><span class="nv">&lt;bucketname&gt;</span><span class="l">/</span><span class="nv">&lt;prefix&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>Here <em>bucketname</em> is the name of the bucket, and <em>prefix</em> can be
+an arbitrary prefix that will be prepended to all object names used by
+S3QL. This allows you to store several S3QL file systems in the same
+S3 bucket.</p>
+<p>Note that the backend login and password for accessing S3 are not the
+user id and password that you use to log into the Amazon Webpage, but
+the <em>AWS access key id</em> and <em>AWS secret access key</em> shown under <a class="reference external" href="https://aws-portal.amazon.com/gp/aws/developer/account/index.html?ie=UTF8&amp;action=access-key">My
+Account/Access Identifiers</a>.</p>
+<p>If you would like S3QL to connect using HTTPS instead of standard
+HTTP, start the storage url with <tt class="docutils literal"><span class="pre">s3s://</span></tt> instead of <tt class="docutils literal"><span class="pre">s3://</span></tt>. Note
+that, as of May 2011, Amazon S3 is faster when accessed using a
+standard HTTP connection, and that S3QL does not perform any server
+certificate validation (see <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=267">issue 267</a>).</p>
+<div class="section" id="reduced-redundancy-storage-rrs">
+<h3>Reduced Redundancy Storage (RRS)<a class="headerlink" href="#reduced-redundancy-storage-rrs" title="Permalink to this headline">¶</a></h3>
+<p>S3QL does not allow the use of <a class="reference external" href="http://aws.amazon.com/s3/#protecting">reduced redundancy storage</a>. The reason for that is a
+combination of three factors:</p>
+<ul class="simple">
+<li>RRS has a relatively low reliability, on average you loose one
+out of every ten-thousand objects a year. So you can expect to
+occasionally loose some data.</li>
+<li>When <tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> asks S3 for a list of the stored objects, this list
+includes even those objects that have been lost. Therefore
+<tt class=" docutils literal"><span class="pre">fsck.s3ql</span></tt> <em>can not detect lost objects</em> and lost data will only
+become apparent when you try to actually read from a file whose data
+has been lost. This is a (very unfortunate) peculiarity of Amazon
+S3.</li>
+<li>Due to the data de-duplication feature of S3QL, unnoticed lost
+objects may cause subsequent data loss later in time (see
+<a class="reference internal" href="general.html#backend-reliability"><em>On Backend Reliability</em></a> for details).</li>
+</ul>
+</div>
+<div class="section" id="potential-issues-when-using-the-us-standard-storage-region">
+<h3>Potential issues when using the US Standard storage region<a class="headerlink" href="#potential-issues-when-using-the-us-standard-storage-region" title="Permalink to this headline">¶</a></h3>
+<p>In the US Standard storage region, Amazon S3 does not guarantee read
+after create consistency. This means that after a new object has been
+stored, requests to read this object may still fail for a little
+while. While the file system is mounted, S3QL is able to automatically
+handle all issues related to this so-called eventual consistency.
+However, problems may arise during the mount process and when the file
+system is checked:</p>
+<p>Suppose that you mount the file system, store some new data, delete
+some old data and unmount it again. Now there is no guarantee that
+these changes will be visible immediately. At least in theory it is
+therefore possible that if you mount the file system again, S3QL
+does not see any of the changes that you have done and presents you
+an &#8220;old version&#8221; of the file system without them. Even worse, if you
+notice the problem and unmount the file system, S3QL will upload the
+old status (which S3QL necessarily has to consider as current) and
+thereby permanently override the newer version (even though this
+change may not become immediately visible either).</p>
+<p>The same problem applies when checking the file system. If S3
+provides S3QL with only partially updated data, S3QL has no way to
+find out if this a real consistency problem that needs to be fixed or
+if it is only a temporary problem that will resolve itself
+automatically (because there are still changes that have not become
+visible yet).</p>
+<p>The likelihood of this to happen is rather low. In practice, most
+objects are ready for retrieval just a few seconds after they have
+been stored, so to trigger this problem one would have to unmount and
+remount the file system in a very short time window. However, since S3
+does not place any upper limit on the length of this window, it is
+recommended to not place S3QL buckets in the US Standard storage
+region. As of May 2011, all other storage regions provide stronger
+consistency guarantees that completely eliminate any of the described
+problems.</p>
+</div>
+</div>
+<div class="section" id="s3-compatible">
+<h2>S3 compatible<a class="headerlink" href="#s3-compatible" title="Permalink to this headline">¶</a></h2>
+<p>S3QL is also able to access other, S3 compatible storage services for
+which no specific backend exists. Note that when accessing such
+services, only the lowest common denominator of available features can
+be used, so it is generally recommended to use a service specific
+backend instead.</p>
+<p>The storage URL for accessing an arbitrary S3 compatible storage
+service is</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3c://</span><span class="nv">&lt;hostname&gt;</span><span class="l">:</span><span class="nv">&lt;port&gt;</span><span class="l">/</span><span class="nv">&lt;bucketname&gt;</span><span class="l">/</span><span class="nv">&lt;prefix&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">s3cs://</span><span class="nv">&lt;hostname&gt;</span><span class="l">:</span><span class="nv">&lt;port&gt;</span><span class="l">/</span><span class="nv">&lt;bucketname&gt;</span><span class="l">/</span><span class="nv">&lt;prefix&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>to use HTTPS connections. Note, however, that at this point S3QL does
+not verify the server certificate (cf. <a class="reference external" href="http://code.google.com/p/s3ql/issues/detail?id=267">issue 267</a>).</p>
+</div>
+<div class="section" id="local">
+<h2>Local<a class="headerlink" href="#local" title="Permalink to this headline">¶</a></h2>
+<p>S3QL is also able to store its data on the local file system. This can
+be used to backup data on external media, or to access external
+services that S3QL can not talk to directly (e.g., it is possible to
+store data over SSH by first mounting the remote system using
+<a class="reference external" href="http://fuse.sourceforge.net/sshfs.html">sshfs</a>, then using the local backend to store the data in the sshfs
+mountpoint).</p>
+<p>The storage URL for local storage is</p>
+<div class="highlight-commandline"><div class="highlight"><pre><span class="l">local://</span><span class="nv">&lt;path&gt;</span><span class="l"></span>
+</pre></div>
+</div>
+<p>Note that you have to write three consecutive slashes to specify an
+absolute path, e.g. <tt class=" docutils literal"><span class="pre">local:///var/archive</span></tt>. Also, relative paths will
+automatically be converted to absolute paths before the authentication
+file is read, i.e. if you are in the <tt class=" docutils literal"><span class="pre">/home/john</span></tt> directory and try to
+mount <tt class=" docutils literal"><span class="pre">local://bucket</span></tt>, the corresponding section in the
+authentication file must match the storage url
+<tt class=" docutils literal"><span class="pre">local:///home/john/bucket</span></tt>.</p>
+</div>
+<div class="section" id="ssh-sftp">
+<h2>SSH/SFTP<a class="headerlink" href="#ssh-sftp" title="Permalink to this headline">¶</a></h2>
+<p>Previous versions of S3QL included an SSH/SFTP backend. With newer
+S3QL versions, it is recommended to instead combine the local backend
+with <a class="reference external" href="http://fuse.sourceforge.net/sshfs.html">sshfs</a> (cf. <a class="reference internal" href="tips.html#ssh-tipp"><em>SSH Backend</em></a>).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="mkfs.html" title="File System Creation"
+             >next</a></li>
+        <li class="right" >
+          <a href="general.html" title="General Information"
+             >previous</a> |</li>
+        <li><a href="index.html">S3QL v1.1.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2011, Nikolaus Rath.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
