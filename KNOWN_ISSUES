@@ -1,0 +1,135 @@
+------------------------------
+Core concepts and issues
+------------------------------
+1. data corruption
+- how does it behaves? ask OSS engineers any rule to follow?
+- block caches, nodeA write, nodeB write, nodeB flush, nodeA flush, download the final file
+- parallel upload tar.gz and download multiple times, verify the consistency.
+- one process or a kernel module?
+- shutdown and recovery policy, meta data recovery, especially inode btree
+
+2. performance
+- upload a whole file even only one byte modified
+- file transfer performanmce
+- cache management policy, how long it takes for a file to be committed into backend OSS server
+- how long it takes for a file to be updated on remote mounted file system
+- is there a background thread check remote bucket status and sync from it periodcally
+- small file, large file, file type
+
+3. stability
+
+4. compatibility
+
+---------------
+install guide:
+---------------
+install s3ql on nodejs box(cedev-ag is fuse2.7.4, but 2.8+ requried by llfuse python modules)
+yum install libattr-devel, fuse, fuse-devel , fuse-libs,  xz-devel
+
+verification:
+[root@cedev-nodejs5 s3ql-1.1.4]# python -c 'import argparse; print argparse.__version__'
+1.2.1
+[root@cedev-nodejs5 s3ql-1.1.4]#  python -c 'import lzma; print lzma.__version__'
+0.5.3
+[root@cedev-nodejs5 s3ql-1.1.4]# python -c 'import llfuse; print llfuse.__version__'
+0.36
+[root@cedev-nodejs5 s3ql-1.1.4]# python -c 'import pycryptopp; print pycryptopp.__version__'
+0.5.29
+
+------------------------------
+Solution
+------------------------------
+- distributed read/write lock on file level, typically two buckets, one is ftp write only and other is multiple node
+- block based file system, may be implemented by fuse or kernel modules
+- backend is S3 compatible storage system
+- periodcally meta-data synchronization and file upload
+- will aware other direct uploaded files, which indicates periodcally full scan onto the full bucket
+
+new requrement: (5 days? Sep 28,29,30 Oct 8, 9)
+- support mount parameter of readonly, read-write
+- both ftp and php use the mounted file system, ftp mount a rw fs, and ro for php
+- new download thread for meta-data sync and file download
+- OSS could be mounted multiple but only one writable
+- new upload thread for meta-data sync and file upload 
+
+further improvement:
+- low granularity locks, on bucket or file?
+- pure distribution or Paxos based distribution locks, that's beautiful, but?
+- md5 checksum
+
+*** Approach 1 ***
+- development based on s3ql project
+
+*** Approach 2 ***
+write a fuse file system on C language and modified libs3 library, easy to implement on demand download, here is task priority
+- modify libs3 library to accomendate oss, 1 day
+- implement fuse file system with liboss, 3 days
+- on demand download, a 3rd party threadpool to download files from OSS, 3 days
+- utility scripts, such as mount/fsck/and so on
+- read/write lock?
+- inode structure to reduce oss access
+- persistent and recovery strategy
+
+CONFIRMED:
+s3ql will upload to OSS if new file created, 
+
+Latency check:
+mount: no logs and tcpdump log on get_metadata, also how to check if any other box mounted the fs
+new file: upload happened in block_cache.py, commit() or expire() do trigger the upload events, for expires
+update file
+delete file
+metadata upload
+non exist file: visit inode and get no such file
+get file: 
+umount
+
+s3fs is on demand download, so mount command doesn't download all the bucket at once, and the later get command visit local caches. 
+It fits well if only one fs mounted at a time, rather one write/multiple read models. Also no clue indicates there is thread working
+on sync metadata and update local database periodcally, so there is no gurrantee the cached files are the most recent.
+
+if --metadata-upload-interval is specified, new file will be committed within 10s, else put file will be upload into OSS immediately.
+if physical files are the same, but with different file name, copy A to B just delete B, but a ¡°internal link" to B marked on meta data
+rewrite a file is implemented as a "PUT" method.
+
+File system unchanged, not uploading metadata. If --metadata-upload-interval 5, files will be committed "after 10s"
+if 7s, file updated at the 12s, and meta commit at 14s.
+if 3s, file updated at the 10s, and meta commit at 12s.
+if 5s, file updated at the 10s, and meta commit at 10s.
+if 11s, file updated at the 3s, and meta commit at 11s.
+
+- currently all access() return True, futher modification required toward fs.py:784
+- any file size limit, or "block size" option?
+
+s3ql is a file based FUSE, which implies each file was stored as file at OSS backend, with block based solution, kernel will maintain block caches,
+but one file will be propogated by block unit.
+
+it bring in inconsistency if multiple mounted, example:
+mount on A, B with no meta-data upload thread
+modify files on A, files put into OSS immediately, but no metadata change. B files stays the same since no download thread
+umount A then B, metadata commit into OSS subsequently
+mount A and B, find the modified files are OK on A. Process quit if cat files on B, if other unmodified files??
+
+to Fix the above problem, readonly option is given
+1. hack write operation
+2. disable metedata commit
+3. always discard local cached metadata on mount
+4. a thread checkout metadata and restore to database, notice the lock
+
+XXX:
+1. if old cache owns a higher seqno, the new mounted fs will failure as no seqno file exist at backend, it happends when we do clean a bucket but on some boxes,
+the mounted file system is not cleared, umount seems does not clean local caches.
+2. mount a bucket twice do bring in inconsistent cache
+3. 
+
+Current status:
+nodejs4 with metadata update thread, read-write, reconnect VS nodejs5 with metadata download/upload thread, readonly option, reconnect
+copy a new file on nodejs4, data upload to OSS success, with metadata committed, but no seqno increment, but nodejs5 thread update metadata by checking seqno,
+as the seqno stays the same with the one before copy new file, nodejs5 make no aware of that change.
+
+So we need another solution, upload meta-data change do incr seqno!!(in the old versions only 1st mount and umount incr seqno)
+It bring in a bug!!! sometimes umount doesnot kill the running fuse process! Mount <-> To figure out the seq_no issues!
+
+
+- new download thread on mount script to sync metadata periodcally.
+- fix the BadStatusLine issue by issue a reconnect over self.conn in s3.py:_do_request()
+
