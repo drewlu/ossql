@@ -89,7 +89,7 @@ def main(args=None):
 
     # Retrieve metadata
     with bucket_pool() as bucket:
-        (param, db) = get_metadata(bucket, cachepath)
+        (param, db) = get_metadata(bucket, cachepath, options.readonly)
             
     if options.nfs:
         log.info('Creating NFS indices...')
@@ -104,6 +104,8 @@ def main(args=None):
                        
     metadata_upload_thread = MetadataUploadThread(bucket_pool, param, db,
                                                   options.metadata_upload_interval)
+    metadata_download_thread = MetadataDownloadThread(bucket_pool, param, cachepath,
+                                                      options.metadata_download_interval)
     block_cache = BlockCache(bucket_pool, db, cachepath + '-cache',
                              options.cachesize * 1024, options.max_cache_entries)
     commit_thread = CommitThread(block_cache)
@@ -125,6 +127,7 @@ def main(args=None):
     try:
         block_cache.init(options.threads)
         metadata_upload_thread.start()
+        metadata_download_thread.start()
         commit_thread.start()
         
         if options.upstart:
@@ -159,6 +162,7 @@ def main(args=None):
                                 (commit_thread.stop, False),
                                 (block_cache.destroy, True),
                                 (metadata_upload_thread.join, False),
+                                (metadata_download_thread.join, False),
                                 (commit_thread.join, False)):
             try:
                 if with_lock:
@@ -190,33 +194,34 @@ def main(args=None):
     # Do not update .params yet, dump_metadata() may fail if the database is
     # corrupted, in which case we want to force an fsck.
        
-    with bucket_pool() as bucket:   
-        seq_no = get_seq_no(bucket)
-        if metadata_upload_thread.db_mtime == os.stat(cachepath + '.db').st_mtime:
-            log.info('File system unchanged, not uploading metadata.')
-            del bucket['s3ql_seq_no_%d' % param['seq_no']]         
-            param['seq_no'] -= 1
-            pickle.dump(param, open(cachepath + '.params', 'wb'), 2)         
-        elif seq_no == param['seq_no']:
-            log.info('Uploading metadata...')     
-            cycle_metadata(bucket)
-            param['last-modified'] = time.time() - time.timezone
-            with tempfile.TemporaryFile() as tmp:
-                dump_metadata(tmp, db)
-                tmp.seek(0)
-                with bucket.open_write('s3ql_metadata', param) as fh:
-                    shutil.copyfileobj(tmp, fh)
-            pickle.dump(param, open(cachepath + '.params', 'wb'), 2)
-        else:
-            log.error('Remote metadata is newer than local (%d vs %d), '
-                      'refusing to overwrite!', seq_no, param['seq_no'])
-            log.error('The locally cached metadata will be *lost* the next time the file system '
-                      'is mounted or checked and has therefore been backed up.')
-            for name in (cachepath + '.params', cachepath + '.db'):
-                for i in reversed(range(4)):
-                    if os.path.exists(name + '.%d' % i):
-                        os.rename(name + '.%d' % i, name + '.%d' % (i+1))     
-                os.rename(name, name + '.0')
+    if not options.readonly:
+        with bucket_pool() as bucket:   
+            seq_no = get_seq_no(bucket)
+            if metadata_upload_thread.db_mtime == os.stat(cachepath + '.db').st_mtime:
+                log.info('File system unchanged, not uploading metadata.')
+                del bucket['s3ql_seq_no_%d' % param['seq_no']]         
+                param['seq_no'] -= 1
+                pickle.dump(param, open(cachepath + '.params', 'wb'), 2)         
+            elif seq_no == param['seq_no']:
+                log.info('Uploading metadata...')     
+                cycle_metadata(bucket)
+                param['last-modified'] = time.time() - time.timezone
+                with tempfile.TemporaryFile() as tmp:
+                    dump_metadata(tmp, db)
+                    tmp.seek(0)
+                    with bucket.open_write('s3ql_metadata', param) as fh:
+                        shutil.copyfileobj(tmp, fh)
+                pickle.dump(param, open(cachepath + '.params', 'wb'), 2)
+            else:
+                log.error('Remote metadata is newer than local (%d vs %d), '
+                          'refusing to overwrite!', seq_no, param['seq_no'])
+                log.error('The locally cached metadata will be *lost* the next time the file system '
+                          'is mounted or checked and has therefore been backed up.')
+                for name in (cachepath + '.params', cachepath + '.db'):
+                    for i in reversed(range(4)):
+                        if os.path.exists(name + '.%d' % i):
+                            os.rename(name + '.%d' % i, name + '.%d' % (i+1))     
+                    os.rename(name, name + '.0')
    
     db.execute('ANALYZE')
     db.execute('VACUUM')
@@ -261,7 +266,7 @@ def determine_threads(options):
         return 2*cores
     
         
-def get_metadata(bucket, cachepath):
+def get_metadata(bucket, cachepath, readonly=False):
     '''Retrieve metadata
     
     Checks:
@@ -289,19 +294,21 @@ def get_metadata(bucket, cachepath):
     # Check for unclean shutdown
     if param['seq_no'] < seq_no:
         if bucket.is_get_consistent():
-            raise QuietError(textwrap.fill(textwrap.dedent('''\
-                It appears that the file system is still mounted somewhere else. If this is not
-                the case, the file system may have not been unmounted cleanly and you should try
-                to run fsck on the computer where the file system has been mounted most recently.
-                ''')))
+           #raise QuietError(textwrap.fill(textwrap.dedent('''\
+           #    It appears that the file system is still mounted somewhere else. If this is not
+           #    the case, the file system may have not been unmounted cleanly and you should try
+           #    to run fsck on the computer where the file system has been mounted most recently.
+           #    ''')))
+            log.warn("local seqno is smaller than bucket seqno, which implies another mountpoint but local bucket is consistent, just ignore it")
         else:                
-            raise QuietError(textwrap.fill(textwrap.dedent('''\
-                It appears that the file system is still mounted somewhere else. If this is not the
-                case, the file system may have not been unmounted cleanly or the data from the 
-                most-recent mount may have not yet propagated through the backend. In the later case,
-                waiting for a while should fix the problem, in the former case you should try to run
-                fsck on the computer where the file system has been mounted most recently.
-                ''')))
+           #raise QuietError(textwrap.fill(textwrap.dedent('''\
+           #    It appears that the file system is still mounted somewhere else. If this is not the
+           #    case, the file system may have not been unmounted cleanly or the data from the 
+           #    most-recent mount may have not yet propagated through the backend. In the later case,
+           #    waiting for a while should fix the problem, in the former case you should try to run
+           #    fsck on the computer where the file system has been mounted most recently.
+           #    ''')))
+            log.warn("local seqno is smaller than bucket seqno, which implies another mountpoint and local bucket is inconsistent, could not ignore the error")
        
     # Check revision
     if param['revision'] < CURRENT_FS_REV:
@@ -311,7 +318,7 @@ def get_metadata(bucket, cachepath):
                          'S3QL installation.')
         
     # Check that the fs itself is clean
-    if param['needs_fsck']:
+    if not readonly and param['needs_fsck']:
         raise QuietError("File system damaged or not unmounted cleanly, run fsck!")        
     if (time.time() - time.timezone) - param['last_fsck'] > 60 * 60 * 24 * 31:
         log.warn('Last file system check was more than 1 month ago, '
@@ -435,11 +442,18 @@ def parse_args(args):
                       default=24*60*60, metavar='<seconds>',
                       help='Interval in seconds between complete metadata uploads. '
                            'Set to 0 to disable. Default: 24h.')
+    parser.add_argument("--metadata-download-interval", action="store", type=int,
+                      default=10, metavar='<seconds>',
+                      help='Interval in seconds between complete metadata downloads. '
+                           'Set to 0 to disable. Default: 10s.')
     parser.add_argument("--threads", action="store", type=int,
                       default=None, metavar='<no>',
                       help='Number of parallel upload threads to use (default: auto).')
     parser.add_argument("--nfs", action="store_true", default=False,
                       help='Support export of S3QL file systems over NFS ' 
+                           '(default: %(default)s)')
+    parser.add_argument("--readonly", action="store_true", default=False,
+                      help='readonly file system doesnot commit changes to OSS when umount' 
                            '(default: %(default)s)')
         
     options = parser.parse_args(args)
@@ -459,10 +473,86 @@ def parse_args(args):
     if options.metadata_upload_interval == 0:
         options.metadata_upload_interval = None
         
+    if options.metadata_download_interval == 0:
+        options.metadata_download_interval = None
+        
     if options.compress == 'none':
         options.compress = None
 
     return options
+
+class MetadataDownloadThread(Thread):
+    '''
+    Periodically download metadata. Upload is done every `interval`
+    seconds, and whenever `event` is set. To terminate thread,
+    set `quit` attribute as well as `event` event.
+    
+    This class uses the llfuse global lock. When calling objects
+    passed in the constructor, the global lock is acquired first.    
+    '''    
+    def __init__(self, bucket_pool, param, cachepath, interval):
+        super(MetadataDownloadThread, self).__init__()
+        self.bucket_pool = bucket_pool
+        self.param = param
+        self.interval = interval
+        self.daemon = True
+        self.event = threading.Event()
+        self.quit = False
+        self.cachepath = cachepath
+        self.name = 'Metadata-Download-Thread'
+           
+    def run(self):
+        log.debug('MetadataDownloadThread: start')
+        
+        while not self.quit:
+            self.event.wait(self.interval)
+            self.event.clear()
+            
+            if self.quit:
+                break
+            
+            with self.bucket_pool() as bucket:
+                #XXX: call bucket.is_get_consistent() to verify data consistency later
+                seq_no = get_seq_no(bucket)
+                if seq_no > self.param['seq_no']:
+                    log.info('Remote metadata is newer than local (%d vs %d), '
+                              'download it', seq_no, self.param['seq_no'])
+                elif seq_no < self.param['seq_no']:
+                    log.warn('Remote metadata is older than local (%s vs %d), '
+                              'ignore the bucket until upload metadata thread done',
+                              seq_no, self.param['seq_no'])
+                    continue
+                else:
+                    log.info('seqno equals local (%d vs %d), ignore then download',
+                             seq_no, self.param['seq_no'])
+                    continue
+                              
+                log.info("Downloading & uncompressing metadata...")
+                os.close(os.open(self.cachepath + '.db.tmp',
+                                 os.O_RDWR | os.O_CREAT | os.O_TRUNC,
+                                 stat.S_IRUSR | stat.S_IWUSR))
+
+                
+                db_conn = Connection(self.cachepath + '.db.tmp', fast_mode=True)
+                with bucket.open_read("s3ql_metadata") as fh:
+                    restore_metadata(fh, db_conn)
+                db_conn.close()
+
+                with llfuse.lock:
+                    if self.quit:
+                        break
+                    os.rename(self.cachepath + '.db.tmp', self.cachepath + '.db')
+                    self.db_mtime = os.stat(self.cachepath + '.db').st_mtime 
+                    self.param['seq_no'] = seq_no
+
+        log.debug('MetadataDownloadThread: end')    
+        
+    def stop(self):
+        '''Signal thread to terminate'''
+        
+        self.quit = True
+        self.event.set()     
+
 
 class MetadataUploadThread(Thread):
     '''

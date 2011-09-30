@@ -340,7 +340,7 @@ class Bucket(AbstractBucket):
         full_url = self._add_auth(method, url, headers, subres, query_string)
         
         redirect_count = 0
-	full_url = "/" + self.bucket_name +  full_url
+        full_url = "/" + self.bucket_name +  full_url
 
         while True:
             log.debug('_do_request(): sending request')
@@ -354,8 +354,10 @@ class Bucket(AbstractBucket):
                 if exc.line == "''":
                     # Server closed connection, reconnect
                     self.conn.close()
-                raise
-                        
+               #raise
+                self._init()
+                continue
+
             log.debug('_do_request(): request-id: %s',  resp.getheader('x-oss-request-id'))
             
             if (resp.status < 300 or resp.status > 399):
