@@ -345,7 +345,6 @@ class Bucket(AbstractBucket):
         while True:
             log.debug('_do_request(): sending request')
             self.conn.request(method, full_url, body, headers)
-            print("method:%s, full_url:%s body:%s headers:%s" %(method, full_url, body, "\n".join(headers)))
               
             log.debug('_do_request(): Reading response')
             try:
@@ -445,7 +444,7 @@ class Bucket(AbstractBucket):
             del headers[key]
                 
         # Date, can't use strftime because it's locale dependent
-       #now = time.gmtime()
+        now = time.gmtime()
        #headers['date'] = ('%s, %02d %s %04d %02d:%02d:%02d GMT' 
        #                   % (C_DAY_NAMES[now.tm_wday],
        #                      now.tm_mday,
@@ -453,8 +452,7 @@ class Bucket(AbstractBucket):
        #                      now.tm_year, now.tm_hour, 
        #                      now.tm_min, now.tm_sec))
 
-       #headers['Date'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", now)
-        headers['date'] = "Mon, 26 Sep 2011 08:35:34 GMT"
+        headers['date'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", now)
         
         auth_strs = [method, '\n']
         
